@@ -164,9 +164,7 @@
     
 
     let SheetImgPlayer = new Image();
-    let SheetImgDarkPlatforms = new Image();
     SheetImgPlayer.src = "gnome_sheet_v2.png";
-    SheetImgDarkPlatforms = "Platforms.png";
     let PlayerWidth = WindowWidth * 0.05;                   // the player is 5% of the window width wide
     let PlayerHeight = PlayerWidth * PlayerFrameHeight / PlayerFrameWidth;  // the height follows the shape of one frame
 
@@ -186,9 +184,15 @@
       const PlatformTypes = {
     STONE: "stone",
     WOOD: "wood",
-    CORRUPTED: "corrupted"
+    CORRUPTED: "corrupted",
+    DARK1:"Dark1"
 };
 
+    // INITIALIZE PLATFORMS AND TERRAIN
+  let PlatformCols = 2;
+  let PlatformRows = 3;
+  let SheetImgDarkPlatforms = new Image();
+  SheetImgDarkPlatforms.src = "DarkPlatforms.png";
 
     const AnimDelay = 6;          // game frames per animation frame (bigger = slower)
     const CrouchLength = 5;       // game frames spent crouching before a ground jump
