@@ -143,16 +143,32 @@
     SizeCanvas();
 
     // ---------- Sprite sheet ----------
-    const SheetCols = 5;
-    const SheetRows = 3;
-    const FrameW = 224;                       // one frame of the sheet, in sheet pixels
-    const FrameH = 304;
+    const PlayerSheetCols = 5;
+    const PlayerSheetRows = 3;
+    //const TerrainSheetCols;
+    //const TerrainSheetRows;
+    const PlayerFrameWidth = 224;                       // one frame of the sheet, in sheet pixels
+    const PlayerFrameHeight = 304;
+    const SmallPlatformWidth = 317;
+    const SmallPlatformHeight = 155;                    
+    const Medium1PlatformWidth = 616;   // 1 is always the slightly bigger version
+    const Medium1PlatformHeight = 167;
+    const Medium2PlatformWidth = 523;
+    const Medium2PlatformHeight = 169;
+    const Big1PlatformWidth = 1031;       // 1 is always the slightly bigger version
+    const Big1PlatformHeight = 183;
+    const Big2PlatformWidth = 722;
+    const Big2PlatformHeight = 204;
+    const LargePlatformWidth = 1255;
+    const LargePlatformHeight = 207;
+    
 
-    let SheetImg = new Image();
-    SheetImg.src = "gnome_sheet_v2.png";
-
+    let SheetImgPlayer = new Image();
+    let SheetImgDarkPlatforms = new Image();
+    SheetImgPlayer.src = "gnome_sheet_v2.png";
+    SheetImgDarkPlatforms = "Platforms.png";
     let PlayerWidth = WindowWidth * 0.05;                   // the player is 5% of the window width wide
-    let PlayerHeight = PlayerWidth * FrameH / FrameW;  // the height follows the shape of one frame
+    let PlayerHeight = PlayerWidth * PlayerFrameHeight / PlayerFrameWidth;  // the height follows the shape of one frame
 
     // Frame numbers count left to right, top to bottom (0 to 14)
     //   row 1: 0  1  2  3  4
@@ -166,6 +182,14 @@
     const SpinStart    = 0.6;                 // fraction of the drop spent stepping through the poses once;
                                               // after that they loop until landing
 
+    // As spread sheet the purple/black platforms
+      const PlatformTypes = {
+    STONE: "stone",
+    WOOD: "wood",
+    CORRUPTED: "corrupted"
+};
+
+
     const AnimDelay = 6;          // game frames per animation frame (bigger = slower)
     const CrouchLength = 5;       // game frames spent crouching before a ground jump
 
@@ -178,7 +202,8 @@
     let LandingY;
     let Spinning = false;         // true once the fall has reached the looping spin
     let StateName = "idle";       // only used by the debug text
-    let CurrentFrame = 0;         // the sprite frame that gets drawn
+    let CurrentPlayerFrame = 0;         // the Player sprite frame that gets drawn
+  
 
     // Steps through a list of frames at the animation speed and returns the current one
     function Animate(list)
@@ -191,6 +216,8 @@
         }
         return list[AnimIndex % list.length];
     }
+
+    
 
     // Picks which frame to show based on what the player is doing
     function ChooseFrame()
@@ -358,7 +385,7 @@
         PlayerOnGround = (PlayerY >= OriginalY);
 
         // Pick the sprite frame (Draw() will use it)
-        CurrentFrame = ChooseFrame();
+        CurrentPlayerFrame = ChooseFrame();
     }
 
     function Jump()
@@ -407,6 +434,10 @@
         background: "lightgreen",
         music: "AmbientBackground1.mp3",
         exits: { right: "room2" }
+        platforms:
+        [
+          {x: WindowWidth / 6 ,y: WindowHeight/5, width}
+        ]
     },
 
     room2: {
@@ -484,7 +515,7 @@
 
     // Update player dimensions
     PlayerWidth = WindowWidth * 0.05;
-    PlayerHeight = PlayerWidth * FrameH / FrameW;
+    PlayerHeight = PlayerWidth * PlayerFrameHeight / PlayerFrameWidth;
 
     // Update ground position
     OriginalY = WindowHeight / 1.2;
@@ -678,10 +709,10 @@
     // ---------- Drawing the game world (canvas) ----------
     function DrawPlayer()
     {
-        if (!SheetImg.complete || SheetImg.naturalWidth === 0) return;     // sheet not loaded yet
+        if (!SheetImgPlayer.complete || SheetImgPlayer.naturalWidth === 0) return;     // sheet not loaded yet
 
-        let col = CurrentFrame % SheetCols;
-        let row = Math.floor(CurrentFrame / SheetCols);
+        let col = CurrentPlayerFrame % PlayerSheetCols;
+        let row = Math.floor(CurrentPlayerFrame / PlayerSheetCols);
 
         ctx.save();
         if (LeftPlayer)
@@ -693,9 +724,20 @@
         {
             ctx.translate(Math.round(PlayerX), Math.round(PlayerY));
         }
-        ctx.drawImage(SheetImg, col * FrameW, row * FrameH, FrameW, FrameH, 0, 0, PlayerWidth, PlayerHeight);
+        ctx.drawImage(SheetImgPlayer, col * PlayerFrameWidth, row * PlayerFrameHeight, PlayerFrameWidth, PlayerFrameHeight, 0, 0, PlayerWidth, PlayerHeight);
         ctx.restore();
     }
+    
+    function DrawPlatforms()
+    {
+      if(!SheetImgDarkPlatforms.complete || SheetImgDarkPlatforms.naturalWidth === 0 ) return;
+
+      let col = 
+
+
+    }
+
+
 
     // Everything in the game world is drawn through here, back to front.
     // Later things (terrain, enemies, NPCs) get their own Draw function called in this list.
@@ -707,13 +749,14 @@
         // terrain, enemies and NPCs will go here
 
         DrawPlayer();
+        DrawPlatforms();
     }
 
     // ---------- Updating the interface (HTML) ----------
     function UpdateUI()
     {
         DebugBox.style.display = ShowDebug ? "block" : "none";
-        if (ShowDebug) DebugBox.textContent = "frame " + CurrentFrame + "  (" + StateName + ")  room: " + CurrentRoom.name;
+        if (ShowDebug) DebugBox.textContent = "frame " + CurrentPlayerFrame + "  (" + StateName + ")  room: " + CurrentRoom.name;
     }
 
     // ---------- Main loop ----------
