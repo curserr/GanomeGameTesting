@@ -464,7 +464,7 @@
         if (side === "left")  PlayerX = 0;
         if (side === "right") PlayerX = CurrentRoom.width - PlayerW;
 
-        UpdateCamera(true);                       // jump straight to the right view, don't glide in
+        UpdateCamera(false);                       // jump straight to the right view, don't glide in
     }
 
     // ---------- Camera ----------
