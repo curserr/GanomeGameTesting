@@ -324,10 +324,10 @@
     let PlayerY = OriginalY;
     let StartY = PlayerY;                     // where the current jump began
 
-    let speed = 4;                            // units per game step
-    let JumpSpeed = 7;
+    let speed = 2;                            // units per game step
+    let JumpSpeed = 3;
     let JumpHeight = 120;
-    let FallSpeed = 4;
+    let FallSpeed = 2;
 
     let PlayerJump = false;      // true while rising
     let PlayerOnGround = true;
@@ -926,7 +926,7 @@
 
     // ---------- Main loop ----------
     // The game logic always runs in steps of 1/60 second, however fast the screen refreshes.
-    const StepMs = 1000 / 60;
+    const StepMs = 1000 / 120;
     let LastTime = performance.now();
     let Leftover = 0;
 
